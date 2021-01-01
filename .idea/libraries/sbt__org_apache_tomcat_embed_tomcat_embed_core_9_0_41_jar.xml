@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="sbt: org.apache.tomcat.embed:tomcat-embed-core:9.0.41:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.apache.tomcat.embed/tomcat-embed-core/jars/tomcat-embed-core-9.0.41.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.apache.tomcat.embed/tomcat-embed-core/srcs/tomcat-embed-core-9.0.41-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
