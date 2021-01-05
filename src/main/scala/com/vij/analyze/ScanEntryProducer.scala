@@ -1,61 +1,60 @@
 package com.vij.analyze
 
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord, RecordMetadata}
-
+import scala.io.Source
 import java.util.Properties
-import java.io.{FileInputStream, FileNotFoundException}
 
-class ScanEntryProducer() {
+class ScanEntryProducer() extends App {
 
   //Default Constructor
   def ScanEntryProducer(): Unit = {
   }
 
-  def pushToKafka(scanEntry: ProducerRecord[String, String], kafkaProp: String) = {
+  def pushToKafka(scanEntry: String): Boolean = {
 
-    //Enrich a prop file with necessary values for Kafka Producer
-    val kafkaSetProp = getEnrichedProp(kafkaProp)
+    //Enrich a prop file with necessary values from application.properties
+    val kafkaSetProp = getEnrichedProp()
 
-    val topic = kafkaSetProp.get("prod.topic-name")
+    //Get topic, key and value(payload) for pushing to Kafka
+    val topic = kafkaSetProp.get("prod.topic-name").asInstanceOf[String]
+    val kaf_key = "Scan_ScreenView"
 
+    //Create a Kafka Producer and ProducerRecord
     val producer = new KafkaProducer[String, String](kafkaSetProp)
+    val producerRecord = new ProducerRecord[String, String](topic,kaf_key,scanEntry)
     var getMetafromKafka: Any = null
 
+    //Try pushing to Kafka. Adding get() is a callback which will ensure record is sent to buffer and committed also.
     try {
-      val metaProducer: RecordMetadata = producer.send(scanEntry).get()
+      val metaProducer: RecordMetadata = producer.send(producerRecord).get()
       getMetafromKafka = metaProducer
+      println(s"Record pushed to the Kafka Topic: $topic")
+      println(s"Sent Record[Key:${producerRecord.key()}, Value:${producerRecord.value()}")
+      println(s"Received in Metadata: ${metaProducer.offset()}; ${metaProducer.partition()}")
     }
     catch {
-      case e: Exception => e.printStackTrace();
+      case ex: Exception => ex.printStackTrace()
+        //Return false in case of failure
+        return false
     }
     finally {
       producer.close()
     }
-    getMetafromKafka
+    //Return true in case of successful push
+    true
   }
 
 
-  def readPropFile(fileName: String): Properties = {
-    val prop = new Properties()
-    try {
-      val filestream = new FileInputStream(fileName)
-      prop.load(filestream)
-    }
-    catch {
-      case ex: FileNotFoundException => println(s"File $fileName is not found"); ex.printStackTrace()
-    }
-    //Return prop file
-    prop
-  }
+  def getEnrichedProp() = {
 
-  def getEnrichedProp(tempKafka: String) = {
-    val propFileName = readPropFile(tempKafka)
+    //Keep all properties config at /src/main/resources
+    val appUrl = getClass.getResource("producer.properties")
     val tempProp = new Properties()
 
-    tempProp.put("prod.bootstrap-servers", propFileName.get("prod.bootstrap-servers"))
-    tempProp.put("prod.key-serializer", propFileName.get("prod.key-serializer"))
-    tempProp.put("prod.value-serializer", propFileName.get("prod.value-serializer"))
-    tempProp.put("prod.acks", propFileName.get("prod.acks"))
+    if (appUrl != null) {
+      val fileSource = Source.fromURL(appUrl)
+      tempProp.load(fileSource.bufferedReader())
+    }
 
     tempProp
   }

@@ -1,0 +1,309 @@
+[
+	{
+		"properties": {
+			"storeId": "001100",
+			"userId": "9752211213393691",
+			"timestamp": 1605856716276,
+			"trackingType": "ScreenView",
+			"screenName": "HHTCart",
+			"navigationType": "Automatic",
+			"items": "0",
+			"appName": "hht",
+			"appVersion": "1.10.1.1"
+		}
+	},
+	{
+		"properties": {
+			"storeId": "001100",
+			"userId": "9752211213393691",
+			"timestamp": 1605858025397,
+			"trackingType": "FinalReceipt",
+			"finalReceipt": {
+				"totalAmount": "708.5",
+				"totalDiscount": "67.9",
+				"entities": [
+					{
+						"ean": "7311070008708",
+						"amount": "23.95",
+						"quantity": "1"
+					},
+					{
+						"ean": "2092466418060",
+						"amount": "18.06",
+						"quantity": "1"
+					},
+					{
+						"ean": "7312730096592",
+						"amount": "29.95",
+						"quantity": "1"
+					},
+					{
+						"ean": "2092401113890",
+						"amount": "13.89",
+						"quantity": "1"
+					},
+					{
+						"ean": "3228020232028",
+						"amount": "32.95",
+						"quantity": "1"
+					},
+					{
+						"ean": "7318690489511",
+						"amount": "35.95",
+						"quantity": "1"
+					},
+					{
+						"ean": "7318690039785",
+						"amount": "20.95",
+						"quantity": "1"
+					},
+					{
+						"ean": "7350002404300",
+						"amount": "39.95",
+						"quantity": "1"
+					},
+					{
+						"ean": "7318690127161",
+						"amount": "26.95",
+						"quantity": "1"
+					},
+					{
+						"ean": "2092302909639",
+						"amount": "9.63",
+						"quantity": "1"
+					},
+					{
+						"ean": "2319103316207",
+						"amount": "113.32",
+						"quantity": "1"
+					},
+					{
+						"ean": "7318690140399",
+						"amount": "20.95",
+						"quantity": "1"
+					},
+					{
+						"ean": "7318690140436",
+						"amount": "24.95",
+						"quantity": "1"
+					},
+					{
+						"ean": "7318690136149",
+						"amount": "25.90",
+						"quantity": "2"
+					},
+					{
+						"ean": "80177173",
+						"amount": "23.95",
+						"quantity": "1"
+					},
+					{
+						"ean": "7318690041450",
+						"amount": "11.95",
+						"quantity": "1"
+					},
+					{
+						"ean": "7392691110155",
+						"amount": "29.95",
+						"quantity": "1"
+					},
+					{
+						"ean": "4008429046483",
+						"amount": "9.95",
+						"quantity": "1"
+					},
+					{
+						"ean": "7310050001142",
+						"amount": "98.85",
+						"quantity": "3"
+					},
+					{
+						"ean": "4014303518427",
+						"amount": "13.95",
+						"quantity": "1"
+					},
+					{
+						"ean": "7310960016502",
+						"amount": "21.50",
+						"quantity": "1"
+					},
+					{
+						"ean": "7340005403349",
+						"amount": "20.95",
+						"quantity": "1"
+					},
+					{
+						"ean": "7322541090344",
+						"amount": "108.00",
+						"quantity": "1"
+					}
+				]
+			},
+			"shoppingTripStartedTimestamp": 1605856710950,
+			"shoppingTripEndedTimestamp": 1605858025394,
+			"shoppingCartEvents": [
+				{
+					"timestamp": 1605856862070,
+					"ean": "7311070008708",
+					"productName": "Grötbröd",
+					"added": true
+				},
+				{
+					"timestamp": 1605856945088,
+					"ean": "2092466418060",
+					"productName": "Tomat röd kvist",
+					"added": true
+				},
+				{
+					"timestamp": 1605856983716,
+					"ean": "7312730096592",
+					"productName": "Druva i korg",
+					"added": true
+				},
+				{
+					"timestamp": 1605857019651,
+					"ean": "2092401113890",
+					"productName": "Banan Chiquita",
+					"added": true
+				},
+				{
+					"timestamp": 1605857056153,
+					"ean": "3228020232028",
+					"productName": "Brie 60+",
+					"added": true
+				},
+				{
+					"timestamp": 1605857107216,
+					"ean": "7318690489511",
+					"productName": "Salami Napoli",
+					"added": true
+				},
+				{
+					"timestamp": 1605857112145,
+					"ean": "7318690039785",
+					"productName": "Skinka rökt tsk",
+					"added": true
+				},
+				{
+					"timestamp": 1605857163808,
+					"ean": "7350002404300",
+					"productName": "Grana Padano10mån",
+					"added": true
+				},
+				{
+					"timestamp": 1605857208674,
+					"ean": "7318690127161",
+					"productName": "Mascarpone",
+					"added": true
+				},
+				{
+					"timestamp": 1605857353097,
+					"ean": "2092302909639",
+					"productName": "Satsumas",
+					"added": true
+				},
+				{
+					"timestamp": 1605857413934,
+					"ean": "2319103316207",
+					"productName": "Nötfärs 12%",
+					"added": true
+				},
+				{
+					"timestamp": 1605857447174,
+					"ean": "7318690140399",
+					"productName": "Vispgrädde 36%",
+					"added": true
+				},
+				{
+					"timestamp": 1605857480747,
+					"ean": "7318690140436",
+					"productName": "Creme Fraiche",
+					"added": true
+				},
+				{
+					"timestamp": 1605857482667,
+					"ean": "7318690136149",
+					"productName": "Mellanmjölk ESL",
+					"added": true
+				},
+				{
+					"timestamp": 1605857484890,
+					"ean": "7318690136149",
+					"productName": "Mellanmjölk ESL",
+					"added": true
+				},
+				{
+					"timestamp": 1605857550922,
+					"ean": "80177173",
+					"productName": "Nutella 350g",
+					"added": true
+				},
+				{
+					"timestamp": 1605857554977,
+					"ean": "7318690041450",
+					"productName": "Blåbärsoppa 1l ICA",
+					"added": true
+				},
+				{
+					"timestamp": 1605857649691,
+					"ean": "7392691110155",
+					"productName": "Toa kattströ",
+					"added": true
+				},
+				{
+					"timestamp": 1605857653210,
+					"ean": "4008429046483",
+					"productName": "Whis Kattsticks ky",
+					"added": true
+				},
+				{
+					"timestamp": 1605857703124,
+					"ean": "7310050001142",
+					"productName": "Mellanrost Brygg",
+					"added": true
+				},
+				{
+					"timestamp": 1605857704213,
+					"ean": "7310050001142",
+					"productName": "Mellanrost Brygg",
+					"added": true
+				},
+				{
+					"timestamp": 1605857706752,
+					"ean": "7310050001142",
+					"productName": "Mellanrost Brygg",
+					"added": true
+				},
+				{
+					"timestamp": 1605857740587,
+					"ean": "4014303518427",
+					"productName": "Chokladpengar nät",
+					"added": true
+				},
+				{
+					"timestamp": 1605857798407,
+					"ean": "7310960016502",
+					"productName": "Skomakarlåda",
+					"added": true
+				},
+				{
+					"timestamp": 1605857848330,
+					"ean": "7340005403349",
+					"productName": "Ostbåg Cheez Ballz",
+					"added": true
+				},
+				{
+					"timestamp": 1605857890397,
+					"ean": "7322541090344",
+					"productName": "Up&Go 6",
+					"added": true
+				}
+			],
+			"shoppingListEvents": [],
+			"multiOfferEvents": [],
+			"bulkDiscountDisplayedEvents": [],
+			"appName": "hht",
+			"appVersion": "1.10.1.1"
+		}
+	}
+]
