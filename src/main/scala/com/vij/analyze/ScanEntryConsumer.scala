@@ -109,12 +109,33 @@ class ScanEntryConsumer(args: Array[String]) {
         |-- ean: string (nullable = true)
         |-- productName: string (nullable = true)
         |-- timestamp: long (nullable = true)
+
+       Sample Data
+
+        +-------+-----+-------------+------------------+-------------+
+        |storeId|added|ean          |productName       |timestamp    |
+        +-------+-----+-------------+------------------+-------------+
+        |002513 |true |7350025784359|Pappersbärkasse   |1605855579775|
+        |002513 |true |7350025784359|Pappersbärkasse   |1605855580474|
+        |002513 |true |7350025784359|Pappersbärkasse   |1605855581121|
        */
 
       //Prepare trans dataframe
       var dd1 = df1.select("finalReceipt.entities")
       var dd2 = dd1.select(explode($"entities").alias("shopEntity"))
       var dd3 = dd2.select("shopEntity.*")
+
+      /*
+      Print dd3
+
+      +------+-------------+--------+
+      |amount|ean          |quantity|
+      +------+-------------+--------+
+      |20.00 |7350025784359|4       |
+      |99.80 |7331210165382|2       |
+      |17.00 |2092401117003|1       |
+
+      */
 
       //Check all entries are fine in trans and product table
       df4.join(dd3,df4("ean") === dd3("ean"),"outer").show(15,false)
