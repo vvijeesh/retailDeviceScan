@@ -48,7 +48,7 @@ class ScanEntryProducer() extends App {
   def getEnrichedProp() = {
 
     //Keep all properties config at /src/main/resources
-    val appUrl = getClass.getResource("application.properties")
+    val appUrl = getClass.getResource("producer.properties")
     val tempProp = new Properties()
 
     if (appUrl != null) {

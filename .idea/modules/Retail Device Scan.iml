@@ -126,6 +126,7 @@
     <orderEntry type="library" name="sbt: org.apache.spark:spark-network-shuffle_2.12:3.0.1:jar" level="project" />
     <orderEntry type="library" name="sbt: org.apache.spark:spark-sketch_2.12:3.0.1:jar" level="project" />
     <orderEntry type="library" name="sbt: org.apache.spark:spark-sql_2.12:3.0.1:jar" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="sbt: org.apache.spark:spark-streaming_2.12:2.4.7:jar" level="project" />
     <orderEntry type="library" name="sbt: org.apache.spark:spark-tags_2.12:3.0.1:jar" level="project" />
     <orderEntry type="library" name="sbt: org.apache.spark:spark-unsafe_2.12:3.0.1:jar" level="project" />
     <orderEntry type="library" name="sbt: org.apache.tomcat.embed:tomcat-embed-core:9.0.41:jar" level="project" />

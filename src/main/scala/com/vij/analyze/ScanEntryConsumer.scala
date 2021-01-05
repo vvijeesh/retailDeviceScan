@@ -1,46 +1,56 @@
 package com.vij.analyze
 
-import org.apache.kafka.clients.consumer.KafkaConsumer
-import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.types.{DataType, StructType}
+import org.apache.kafka.clients.consumer.{ConsumerRecord, KafkaConsumer}
+import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.streaming.dstream.InputDStream
+import org.apache.spark.streaming.{Seconds, StreamingContext}
+import org.apache.spark.streaming.kafka010.{ConsumerStrategies, LocationStrategies, KafkaUtils}
+
 import scala.collection.JavaConverters._
-
-import java.util.Properties
-import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
-
-import scala.collection.JavaConverters.{asJavaIterableConverter, iterableAsScalaIterableConverter}
+import java.util.{Calendar, Properties}
+import scala.io.Source
 
 class ScanEntryConsumer(args: Array[String]) {
 
   //Default Constructor
   def ScanEntryConsumer(): Unit = {
+  }
 
-    val props: Properties = new Properties()
-    props.put("group.id", "test")
-    props.put("bootstrap.servers", "localhost:9092")
-    props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
-    props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
-    props.put("enable.auto.commit", "true")
-    props.put("auto.commit.interval.ms", "1000")
-    val consumer = new KafkaConsumer(props)
-    val topics = List("topic_text")
+  def main (args: Array[String]) = {
+
+    //Enrich a prop file with necessary values from application.properties
+    val props = getConsumerEnrichedProp()
+
+    val checkDir = "file:::F:\\Cockroach\\retailDeviceScan\\src\\main\\resources"
+
+    val spconf = new SparkConf().setAppName("ScanData_Consumer")
+    val spcontext = new SparkContext(spconf)
+
+    //Create a streaming context of 30m interval
+    val ssc = new StreamingContext(spcontext,Seconds(1800))
+
+    val dStream: InputDStream[ConsumerRecord[String,String]] = KafkaUtils.
     try {
-      consumer.subscribe(topics.asJava)
-      while (true) {
-        val records = consumer.poll(10)
-        for (record <- records.asScala) {
-          println("Topic: " + record.topic() +
-            ",Key: " + record.key() +
-            ",Value: " + record.value() +
-            ", Offset: " + record.offset() +
-            ", Partition: " + record.partition())
-        }
-      }
+
     } catch {
       case e: Exception => e.printStackTrace()
     } finally {
       consumer.close()
     }
+  }
+
+  def getConsumerEnrichedProp() = {
+
+    //Keep all properties config at /src/main/resources
+    val appUrl = getClass.getResource("consumer.properties")
+    val tempProp = new Properties()
+
+    if (appUrl != null) {
+      val fileSource = Source.fromURL(appUrl)
+      tempProp.load(fileSource.bufferedReader())
+    }
+
+    tempProp
   }
 
 }

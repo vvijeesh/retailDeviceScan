@@ -18,3 +18,11 @@ libraryDependencies += "com.google.code.gson" % "gson" % "2.8.6"
 
 // https://mvnrepository.com/artifact/org.json/json
 libraryDependencies += "org.json" % "json" % "20201115"
+
+// https://mvnrepository.com/artifact/org.apache.spark/spark-streaming
+libraryDependencies += "org.apache.spark" %% "spark-streaming" % "2.4.7" % "provided"
+
+// https://mvnrepository.com/artifact/org.apache.spark/spark-streaming-kafka-0-10
+libraryDependencies += "org.apache.spark" %% "spark-streaming-kafka-0-10" % "2.4.0"
+
+
