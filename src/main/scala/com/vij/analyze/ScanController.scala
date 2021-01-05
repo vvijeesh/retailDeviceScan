@@ -16,16 +16,17 @@ class ScanController extends SpringBootServletInitializer {
   }
 
   //Post Mapping to publish scan entry json
-  @PostMapping(path = Array("/publish/{scanEntry}"))
-  def sendMessageToKafkaTopic(@RequestParam("scanEntry") scanEntry: ProducerRecord[String, String],
-                             @RequestParam("propFileParam") propFile: String): Unit = {
-    //Get property file name from args
-    val prop = propFile
+  @PostMapping(path = Array("/publish/{payload}"))
+  def sendMessageToKafkaTopic(@RequestParam("payload") scanEntryData: String): Unit = {
 
     val scanEntryObj = new ScanEntryProducer()
 
     //Push to Kafka and get metadata for the successful commit
-    val scanEntryMeta = scanEntryObj.pushToKafka(scanEntry,prop)
+    val scanEntryMeta: Boolean = scanEntryObj.pushToKafka(scanEntryData)
+
+    if (scanEntryMeta) {println("[INFO] Sent Record to Kafka")}
+    else
+      {println("[ERROR] Error sending Record to Kafka")}
 
   }
 

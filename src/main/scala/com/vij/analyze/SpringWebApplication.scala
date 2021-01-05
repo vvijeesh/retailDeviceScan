@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan
 
 @EnableAutoConfiguration
 @SpringBootApplication
-class SpringWebApplication {
+class SpringWebApplication () {
     println("\n\n\n *** Hello World..... Starting Main SB App ***\n\n\n")
 }
 
