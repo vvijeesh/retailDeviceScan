@@ -1,5 +1,6 @@
 package com.vij.analyze
 
+import com.vij.analyze.dataIntegrity._
 import org.apache.kafka.clients.consumer.{ConsumerRecord, KafkaConsumer}
 import org.apache.spark
 import org.apache.spark.rdd.RDD
@@ -7,7 +8,7 @@ import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
 import org.apache.spark.sql.catalyst.dsl.expressions.StringToAttributeConversionHelper
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.streaming.dstream.{DStream, InputDStream}
-import org.apache.spark.sql.functions.{column, explode}
+import org.apache.spark.sql.functions.{column, explode, _}
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.sql.types.{DataType, StructType}
 import org.apache.spark.streaming.kafka010.{CanCommitOffsets, ConsumerStrategies, HasOffsetRanges, KafkaUtils, LocationStrategies}
@@ -30,7 +31,7 @@ class ScanEntryConsumer(args: Array[String]) {
 
     val spark = SparkSession
       .builder()
-      .appName("WeatherForecast")
+      .appName("RetailScanData")
       .master("yarn")
       .enableHiveSupport()
       .getOrCreate()
@@ -56,7 +57,6 @@ class ScanEntryConsumer(args: Array[String]) {
     val dStream: InputDStream[ConsumerRecord[String, String]] = KafkaUtils.createDirectStream[String, String](ssc, LocationStrategies.PreferConsistent, ConsumerStrategies.Subscribe[String, String](kafkaTopics, kafkaParams))
 
     try {
-
       dStream.foreachRDD { rawdata_rdd =>
         //Func() to prepare final target data
         prepareScanDataTables(rawdata_rdd, spark)
@@ -64,12 +64,14 @@ class ScanEntryConsumer(args: Array[String]) {
         val offsetRanges = rawdata_rdd.asInstanceOf[HasOffsetRanges].offsetRanges
         dStream.asInstanceOf[CanCommitOffsets].commitAsync(offsetRanges)
       }
-
     } catch {
       case e: Exception => e.printStackTrace()
     } finally {
-
     }
+
+    ssc.start()
+    //Await for stop or SIGTERM from user
+    ssc.awaitTermination()
   }
 
   def getConsumerEnrichedProp() = {
@@ -88,16 +90,21 @@ class ScanEntryConsumer(args: Array[String]) {
 
   def prepareScanDataTables(given_rdd: RDD[ConsumerRecord[String, String]], spark: SparkSession) = {
 
+
     given_rdd.foreach { c =>
       println("Processing data for KEY: " + c.key())
 
       val newSchema = DataType.fromJson(c.value).asInstanceOf[StructType]
-      val finaldf = spark.read.option("multiLine", true).schema(newSchema).json(c.value().asInstanceOf[String])
+      val finaldf = spark.read.option("multiLine", true).schema(newSchema).json(c.value())
 
-      //Prepare Shopping Cart Dataframe
+      //=======================
+      // Prepare Product Dataframe
+      //=======================
+
+      import spark.implicits._
       var df1 = finaldf.select("properties.*")
       var df2: DataFrame = df1.select("storeId", "shoppingCartEvents").toDF()
-      var df3 = df2.select($"storeId", explode($"shoppingCartEvents").alias("shopCart"))
+      var df3 = df2.select(col("storeId"), explode(col("shoppingCartEvents")).alias("shopCart"))
       var df4 = df3.select("storeId", "shopCart.*")
 
       /*
@@ -120,16 +127,27 @@ class ScanEntryConsumer(args: Array[String]) {
         |002513 |true |7350025784359|Pappersbärkasse   |1605855581121|
        */
 
+      spark.conf.set("spark.sql.legacy.timeParserPolicy", "LEGACY")
+
+      //Validate and clean/load the product table - productScanDF
+      var productScanDF: DataFrame = getValidatedProductDF(df4)
+
+      //Store the product table - productScanDF
+      saveProductTable(productScanDF)
+
+      //=======================
       //Prepare trans dataframe
+      //=======================
+
       var dd1 = df1.select("finalReceipt.entities")
-      var dd2 = dd1.select(explode($"entities").alias("shopEntity"))
+      var dd2 = dd1.select(explode(col("entities")).alias("shopEntity"))
       var dd3 = dd2.select("shopEntity.*")
 
       /*
       Print dd3
 
       +------+-------------+--------+
-      |amount|ean          |quantity|
+      |amount_Item  |  ean_Product_Id  |  product_Quantity |
       +------+-------------+--------+
       |20.00 |7350025784359|4       |
       |99.80 |7331210165382|2       |
@@ -137,8 +155,17 @@ class ScanEntryConsumer(args: Array[String]) {
 
       */
 
-      //Check all entries are fine in trans and product table
-      df4.join(dd3,df4("ean") === dd3("ean"),"outer").show(15,false)
+      //Validate and clean/load trans table DF - productTransDF
+      val productTransactionDF: DataFrame = getValidatedTransactionDF(dd3)
+
+      //Store the product Transaction table - productTransactionDF
+      saveTransactionTable(productTransactionDF)
+
+      //Aggregate Check all entries based on trans and product table - ean : product_ID
+      var summaryTable: DataFrame = productScanDF.join(productTransactionDF, productScanDF("ean_Product_Id") === productTransactionDF("ean_Product_Id"), "outer")
+
+      // Perform summary based aggregation
+      prepareSummaryTables(summaryTable)
 
       /*
       +-------+-----+-------------+------------------+-------------+------+-------------+--------+
@@ -152,5 +179,25 @@ class ScanEntryConsumer(args: Array[String]) {
        */
 
     }
+  }
+
+  def prepareSummaryTables(givenDF: DataFrame) = {
+
+    /* === Create Summary Table:
+
+    Total Transaction Value by Store
+    Total Transaction Value by Product
+    Total Transaction Value by Hour of the Day
+
+    */
+
+    //Store wise Summary
+    givenDF.groupBy("store_Id").sum("amount_Item").show(false)
+
+    //Product wise Summary
+    givenDF.groupBy("ean_Product_Id").sum("amount_Item").show(false)
+
+    //Time wise summary (Hour wise)
+    givenDF.withColumn("hour",hour(col("timestamp_at_Scan"))).groupBy("hour").sum("amount_Item").show(false)
   }
 }
